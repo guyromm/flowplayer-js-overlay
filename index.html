@@ -1,0 +1,169 @@
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<!DOCTYPE html> 
+<!-- 
+	This is Flowplayer standalone demo. The fastest way to get started. 
+	You can freely copy things on your site. All demos can be found from: 
+	
+	http://flowplayer.org/demos/
+	
+	Enjoy!
+--> 
+ 
+<head> 
+ 
+ 
+ 
+<script type="text/javascript" src="raphael-min.js"></script>   
+ 
+<!-- flowplayer scripts should be loaded from your servers NOT from static.flowplayer.org  --> 
+
+<script type="text/javascript" src="flowplayer-3.2.6.min.js"></script> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<script src="flowplayer.controls-3.0.2.min.js"></script>	
+ 
+ 
+ 
+ 
+ 
+<!-- some styling for the standalone page. this line can (or must) be removed --> 
+<!--<link rel="stylesheet" type="text/css" href="/demos/standalone.css"/> -->
+ 
+ 
+</head> 
+ 
+ 
+<body> 
+ 
+ 
+<!-- "HULU" look and feel --> 
+<!--<link rel="stylesheet" type="text/css" href="/css/controls-hulu.css"/>	-->
+ 
+ 
+ 
+<!-- player container--> 
+<a 
+	href="flowplayer-700.flv" 
+	style="display:block;width:500px;height:300px;" 
+	id="huluPlayer"> 
+</a> 
+ 
+<!-- controlbar container --> 
+<div id="hulu" class="hulu"></div> 
+ 
+<!-- Flowplayer installation and configuration --> 
+<script language="JavaScript"> 
+ 
+// install everything after page is ready
+window.onload = function() {
+var p = $f("huluPlayer", "http://releases.flowplayer.org/swf/flowplayer-3.2.7.swf", {
+		'clip': {
+			autoPlay: true,
+			autoBuffering: true
+		},
+		'plugins': {controls: null}
+	}).controls("hulu", {duration: 25});
+
+var cntx=0; var cnty=0;
+var denx=1; var deny=1;
+p.load(function() {
+	var paper = Raphael(10, 50, 320, 200);
+	var hpc = document.getElementById('huluPlayer');
+
+
+	console.log('hulu is %o x %o',hpc.style.width,hpc.style.height);
+	var oly = document.createElement('div');
+	oly.id = 'overlay';
+
+	oly.style.position='absolute'; oly.style.top=0;
+	oly.style.width = hpc.style.width;
+	oly.style.height = hpc.style.height;
+	oly.style.zIndex=99;
+        oly.backgroundColor='#0f0';
+
+	var lnk = document.createElement('a'); 
+	lnk.innerHTML='howdy hoe';  
+	lnk.style.position='absolute';
+	lnk.style.backgroundColor='#f00';
+	lnk.style.top=50;lnk.style.left=50;
+lnk.href='/foobar.html'; //http://www.theregister.co.uk/';
+	lnk.addEventListener('mousedown',function(ev) {
+//location.href='http://www.theregister.co.uk/';
+		//alert('hi');
+	    },false);
+	oly.appendChild(lnk);
+	hpc.appendChild(oly);
+
+	console.log(hpc);
+
+	oly.addEventListener('mousedown',function(ev) {
+		console.log(ev);
+		alert('clickitty at '+ev.clientX+','+ev.clientY+' @'+p.getStatus().time);
+	    },true);
+	/*var rp = Raphael('overlay',parseInt(hpc.style.width),parseInt(hpc.style.height));
+	var circle = rp.circle(50, 40, 10);
+	circle.attr("fill", "90-#fff-#000"); //"#f00");
+	// Sets the stroke attribute of the circle to white
+	circle.attr("stroke", "#fff");
+	//circle.attr('fill-opacity',50);
+//circle.mousedown(function() { location.href='http://theregister.co.uk/'; });
+//circle.click(function() { location.href='http://theregister.co.uk/'; });*/
+	
+	//append wmode transparent to obj
+	var o = document.getElementsByTagName('object')[0];
+	var wm = document.createElement('param');
+	wm.name='wmode';
+	wm.value='transparent';
+	o.appendChild(wm);
+	console.log('appending transparency %o to wm %o',wm,o);
+
+	function gs() {
+	    var st = p.getStatus();
+	    if (st.state==3)
+		{
+		    if (cntx>=parseInt(oly.style.width)) denx=-1;
+		    else if (cntx<0) denx=1;
+		    if (cnty>=parseInt(oly.style.height)) deny=-1;
+		    else if (cnty<0) deny=1;
+		    var deltx = 2*denx ; var delty = 2*deny;
+		    cntx+=deltx;cnty+=delty;
+		    
+		    lnk.style.top=(cnty)+'px';
+		    lnk.style.left=(cntx)+'px';	   
+		    lnk.innerHTML = 'w00t '+st.time;
+		    //circle.translate(deltx,delty);
+		}
+
+
+
+	    /*console.log('position %o , lnk %o at %o,%o ',p.getStatus().time
+			,lnk
+			,lnk.style.left
+			,lnk.style.top);*/
+	    window.setTimeout(gs,20);
+	}
+
+	gs();
+});
+};
+</script>	
+ 
+ 
+ 
+ 
+</body> 
+ 
+</html> 
